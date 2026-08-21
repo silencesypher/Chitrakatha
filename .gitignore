@@ -1,0 +1,18 @@
+# Vercel CLI local state
+.vercel/
+
+# Firebase CLI local state
+.firebase/
+firebase-debug.log
+database-debug.log
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# Nothing here needs npm — no package.json on purpose (see DEPLOY.md).
+# If you ever add one, uncomment:
+# node_modules/
+
+.vercel

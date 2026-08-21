@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Deliberately no interactive-widget=resizes-content here: it makes the browser
+     shrink the real layout viewport (and CSS orientation/dvh with it) when the
+     keyboard opens, and on a wide-but-short-keyboard phone that shrunk height can
+     drop below the width — flipping `orientation` to landscape while the phone is
+     still upright, which silently switches the game into its two-column landscape
+     layout mid-guess. gamescreen.js tracks visualViewport (see trackVisualViewport)
+     and citrakatha.css sizes off that --app-h value instead: same result, without
+     touching the real viewport or the orientation the rest of the CSS relies on. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#e7ddc3">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Citrakathā</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Eczar:wght@600;700;800&family=Hind:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<link rel="stylesheet" href="citrakatha.css">
+</head>
+<body>
+<div id="conn-banner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#a23b2e;color:#fff8ec;text-align:center;padding:10px 16px;font-size:13.5px;font-family:'Hind',sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.3);"></div>
+
+<!-- ============ LANDING ============ -->
+<div class="screen active" id="screen-landing">
+  <div class="center-wrap">
+    <div style="width:100%;max-width:440px;">
+      <div class="brandline">
+        <span class="deva">चित्रकथा</span>
+        <h1>Citrakathā</h1>
+        <p>a drawing &amp; guessing game of Rāmāyaṇa, Mahābhārata &amp; the Purāṇas</p>
+      </div>
+      <div class="card" id="landing-card">
+        <div class="errbox" id="landing-err"></div>
+        <div class="field">
+          <label>Your name</label>
+          <input id="in-name" maxlength="18" placeholder="e.g. Arjuna">
+        </div>
+        <button class="btn btn-primary btn-block" id="btn-create">Create a room</button>
+        <div class="divider-or">or join one</div>
+        <div class="field" style="margin-bottom:10px;">
+          <label>Room code</label>
+          <input id="in-code" maxlength="5" placeholder="e.g. RK7X9" style="text-transform:uppercase;letter-spacing:.1em;">
+        </div>
+        <button class="btn btn-ghost btn-block" id="btn-join">Join room</button>
+
+        <div class="hint-toggle" id="how-toggle">how does this work?</div>
+        <div class="hint-body" id="how-body">
+          One player draws a word — a character, weapon, place or episode from Purāṇic lore — while everyone else guesses. The host picks English (IAST, with ā, ś, ṣ, ṛ and friends) or देवनागरी (Devanagari) for the round when setting up the room, and an on-screen keyboard for that script sits below the guess box, so no special keyboard is needed either way. Fastest correct guesses score the most. Share the room code with your circle and everyone joins from their own phone or laptop.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LOBBY ============ -->
+<div class="screen" id="screen-lobby">
+  <div class="lobby-wrap">
+    <div class="lobby-top">
+      <div class="seal" id="lobby-seal">----</div>
+      <div class="lbl">room code · share with your circle</div>
+      <div class="copyline">
+        <button id="btn-copy">copy code</button>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-settings">
+      <h3>Round settings <span style="color:#7d6a4c;font-weight:400;font-size:12px;">(host only)</span></h3>
+      <div class="settingsrow">
+        <div class="field" style="margin-bottom:0;">
+          <label>Rounds</label>
+          <select id="set-rounds"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Draw time</label>
+          <select id="set-time"><option value="45">45s</option><option value="60">60s</option><option value="80" selected>80s</option><option value="110">110s</option></select>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Difficulty</label>
+          <select id="set-diff"><option value="1">Easy</option><option value="2">Medium</option><option value="mixed" selected>Mixed</option><option value="3">Hard</option></select>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Script</label>
+          <select id="set-lang"><option value="iast" selected>English (IAST)</option><option value="deva">देवनागरी</option></select>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" id="btn-start">Start game</button>
+    </div>
+
+    <div class="panel">
+      <h3>Players in the room</h3>
+      <ul class="plist" id="lobby-players"></ul>
+      <div class="waitline" id="lobby-wait" style="display:none;">Waiting for the host to start the game…</div>
+    </div>
+    <div class="footnote">Refreshing this tab will drop you back to the start — rejoin with the same room code and name. If you leave for good, someone else can take your name once your tab actually disconnects. A room closes itself once it has sat unused for a couple of hours.</div>
+  </div>
+</div>
+
+<!-- ============ GAME ============ -->
+<div class="screen" id="screen-game">
+  <div class="game-wrap">
+    <div class="topbar">
+      <div class="rc" id="game-rc">ROOM ----</div>
+      <div class="roundinfo" id="game-roundinfo">Round 1 / 3</div>
+      <div class="timer" id="game-timer">--</div>
+    </div>
+    <div class="maskword" id="game-maskword" style="display:none;"></div>
+
+    <div class="main-area">
+      <div class="board-col">
+        <div class="board-frame">
+          <canvas id="board" width="800" height="500"></canvas>
+          <div class="board-overlay" id="choose-overlay" style="display:none;">
+            <h3 id="choose-title">Choose a word to draw</h3>
+            <div class="choice-btns" id="choose-btns"></div>
+          </div>
+          <div class="board-overlay" id="wait-overlay" style="display:none;">
+            <h3 id="wait-title">Waiting…</h3>
+          </div>
+          <div class="roundend-banner" id="roundend-banner" style="display:none;">
+            <div class="cat" id="re-cat">Rāmāyaṇa</div>
+            <div class="word" id="re-word">Rāma</div>
+            <ul id="re-scorers"></ul>
+          </div>
+        </div>
+        <div class="toolbar" id="drawer-toolbar" style="display:none;">
+          <div class="tool-row">
+            <button class="toolbtn active" data-tool="brush" title="Brush" aria-label="Brush">🖌️</button>
+            <button class="toolbtn" data-tool="eraser" title="Eraser" aria-label="Eraser">🧽</button>
+            <button class="toolbtn" data-tool="line" title="Line" aria-label="Straight line">📏</button>
+            <button class="toolbtn" data-tool="rect" title="Rectangle" aria-label="Rectangle">▭</button>
+            <button class="toolbtn" data-tool="circle" title="Circle" aria-label="Circle">◯</button>
+            <button class="toolbtn" data-tool="fill" title="Fill bucket" aria-label="Fill bucket">🪣</button>
+            <div class="spacer"></div>
+            <!-- The .lbl spans collapse on phones (see .toolbar .util .lbl), leaving
+                 just the glyph, so these stay on screen instead of scrolling off. -->
+            <button class="util" id="btn-undo" title="Undo" aria-label="Undo">↶<span class="lbl"> Undo</span></button>
+            <button class="util" id="btn-redo" title="Redo" aria-label="Redo">↷<span class="lbl"> Redo</span></button>
+          </div>
+          <div class="tool-row">
+            <button type="button" class="swatch active" data-c="#2e2418" style="background:#2e2418;" aria-label="Ink"></button>
+            <button type="button" class="swatch" data-c="#c1440e" style="background:#c1440e;" aria-label="Vermilion"></button>
+            <button type="button" class="swatch" data-c="#c99a3b" style="background:#c99a3b;" aria-label="Gold"></button>
+            <button type="button" class="swatch" data-c="#0e6b62" style="background:#0e6b62;" aria-label="Peacock green"></button>
+            <button type="button" class="swatch" data-c="#28306b" style="background:#28306b;" aria-label="Indigo"></button>
+            <button type="button" class="swatch" data-c="#f2ebd8" style="background:#f2ebd8;border-color:#c9b98a;" aria-label="Cream"></button>
+            <button type="button" class="sizebtn" data-s="3" aria-label="Thin brush"><i style="width:5px;height:5px"></i></button>
+            <button type="button" class="sizebtn active" data-s="7" aria-label="Medium brush"><i style="width:11px;height:11px"></i></button>
+            <button type="button" class="sizebtn" data-s="14" aria-label="Thick brush"><i style="width:18px;height:18px"></i></button>
+            <div class="spacer"></div>
+            <span class="rotate-hint">↻ turn your phone sideways for a bigger canvas</span>
+            <button class="util" id="btn-clear" title="Clear canvas" aria-label="Clear canvas">Clear<span class="lbl"> canvas</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-col">
+        <div class="panel tight">
+          <h3 style="margin-bottom:8px;">Scoreboard</h3>
+          <div id="scorelist"></div>
+        </div>
+        <div class="chatbox">
+          <div class="chatlog" id="chatlog" role="log" aria-live="polite" aria-label="Guesses and messages"></div>
+          <form class="guessform" id="guessform">
+            <button type="button" class="scriptbtn" id="btn-script" aria-label="Show the on-screen script keyboard" aria-expanded="false" aria-controls="iastbar">ā</button>
+            <input id="guess-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send" placeholder="type your guess…" maxlength="60">
+            <button type="submit">Guess</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="iastbar" id="iastbar"></div>
+  </div>
+</div>
+
+<!-- ============ GAME END ============ -->
+<div class="screen" id="screen-end">
+  <div class="center-wrap">
+    <div class="card" style="max-width:420px;">
+      <h2>Final standings</h2>
+      <p class="sub">the round has closed — well guessed</p>
+      <ul class="final-list" id="final-list"></ul>
+      <button class="btn btn-primary btn-block" id="btn-again" style="margin-top:6px;">Play again</button>
+    </div>
+  </div>
+</div>
+
+<!-- type="module" is what lets the code live in src/ as ES modules.
+     Modules are fetched over HTTP, so serve the folder rather than opening this
+     file from disk: `python3 -m http.server 8000` then visit localhost:8000.
+     (You need a URL to share with other players anyway.) -->
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

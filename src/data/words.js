@@ -1,0 +1,46 @@
+/* ================= WORD BANK =================
+   Each entry: [English/IAST, difficulty, category, Devanagari]
+   Kept verbatim from the original single-file version. */
+export const WORDS = [
+["Rāma",1,"Rāmāyaṇa","राम"],["Sītā",1,"Rāmāyaṇa","सीता"],["Lakṣmaṇa",1,"Rāmāyaṇa","लक्ष्मण"],["Hanumān",1,"Rāmāyaṇa","हनुमान"],
+["Rāvaṇa",1,"Rāmāyaṇa","रावण"],["Bharata",1,"Rāmāyaṇa","भरत"],["Daśaratha",1,"Rāmāyaṇa","दशरथ"],
+["Vibhīṣaṇa",2,"Rāmāyaṇa","विभीषण"],["Kumbhakarṇa",2,"Rāmāyaṇa","कुम्भकर्ण"],["Sugrīva",2,"Rāmāyaṇa","सुग्रीव"],["Vālī",2,"Rāmāyaṇa","वाली"],
+["Aṅgada",2,"Rāmāyaṇa","अंगद"],["Jaṭāyu",2,"Rāmāyaṇa","जटायु"],["Śūrpaṇakhā",2,"Rāmāyaṇa","शूर्पणखा"],["Mandodarī",2,"Rāmāyaṇa","मन्दोदरी"],
+["Kausalyā",2,"Rāmāyaṇa","कौसल्या"],["Kaikeyī",2,"Rāmāyaṇa","कैकेयी"],["Sumitrā",2,"Rāmāyaṇa","सुमित्रा"],["Śatrughna",2,"Rāmāyaṇa","शत्रुघ्न"],
+["Indrajit",2,"Rāmāyaṇa","इन्द्रजित्"],["Ahalyā",2,"Rāmāyaṇa","अहल्या"],["Śabarī",2,"Rāmāyaṇa","शबरी"],["Jāmbavān",2,"Rāmāyaṇa","जाम्बवान"],
+["Mārīca",2,"Rāmāyaṇa","मारीच"],["Vālmīki",2,"Rāmāyaṇa","वाल्मीकि"],["Viśvāmitra",2,"Rāmāyaṇa","विश्वामित्र"],["Vasiṣṭha",2,"Rāmāyaṇa","वसिष्ठ"],
+["Tāṭakā",3,"Rāmāyaṇa","ताटका"],["Ayodhyā",3,"Rāmāyaṇa","अयोध्या"],["Laṅkā",3,"Rāmāyaṇa","लंका"],["Kiṣkindhā",3,"Rāmāyaṇa","किष्किन्धा"],
+["Mithilā",3,"Rāmāyaṇa","मिथिला"],["Daṇḍakāraṇya",3,"Rāmāyaṇa","दण्डकारण्य"],["Puṣpaka Vimāna",3,"Rāmāyaṇa","पुष्पक विमान"],["Sarayū",3,"Rāmāyaṇa","सरयू"],
+["Sañjīvanī",3,"Rāmāyaṇa","संजीवनी"],["Lakṣmaṇa Rekhā",3,"Rāmāyaṇa","लक्ष्मण रेखा"],["Agni Parīkṣā",3,"Rāmāyaṇa","अग्नि परीक्षा"],["Lava",3,"Rāmāyaṇa","लव"],
+["Kuśa",3,"Rāmāyaṇa","कुश"],["Śravaṇakumāra",3,"Rāmāyaṇa","श्रवणकुमार"],
+
+["Kṛṣṇa",1,"Mahābhārata","कृष्ण"],["Arjuna",1,"Mahābhārata","अर्जुन"],["Bhīma",1,"Mahābhārata","भीम"],["Yudhiṣṭhira",1,"Mahābhārata","युधिष्ठिर"],
+["Duryodhana",1,"Mahābhārata","दुर्योधन"],["Draupadī",1,"Mahābhārata","द्रौपदी"],["Karṇa",1,"Mahābhārata","कर्ण"],["Bhīṣma",1,"Mahābhārata","भीष्म"],
+["Droṇa",2,"Mahābhārata","द्रोण"],["Nakula",2,"Mahābhārata","नकुल"],["Sahadeva",2,"Mahābhārata","सहदेव"],["Kuntī",2,"Mahābhārata","कुन्ती"],
+["Gāndhārī",2,"Mahābhārata","गान्धारी"],["Dhṛtarāṣṭra",2,"Mahābhārata","धृतराष्ट्र"],["Śakuni",2,"Mahābhārata","शकुनि"],["Abhimanyu",2,"Mahābhārata","अभिमन्यु"],
+["Vidura",2,"Mahābhārata","विदुर"],["Aśvatthāmā",2,"Mahābhārata","अश्वत्थामा"],["Kṛpa",2,"Mahābhārata","कृप"],["Śikhaṇḍī",2,"Mahābhārata","शिखण्डी"],
+["Dhṛṣṭadyumna",2,"Mahābhārata","धृष्टद्युम्न"],["Śalya",2,"Mahābhārata","शल्य"],["Jarāsandha",2,"Mahābhārata","जरासंध"],["Śiśupāla",2,"Mahābhārata","शिशुपाल"],
+["Ghaṭotkaca",2,"Mahābhārata","घटोत्कच"],["Ekalavya",2,"Mahābhārata","एकलव्य"],["Subhadrā",2,"Mahābhārata","सुभद्रा"],["Uttarā",2,"Mahābhārata","उत्तरा"],
+["Virāṭa",2,"Mahābhārata","विराट"],
+["Barbarīka",3,"Mahābhārata","बर्बरीक"],["Hastināpura",3,"Mahābhārata","हस्तिनापुर"],["Indraprastha",3,"Mahābhārata","इन्द्रप्रस्थ"],["Kurukṣetra",3,"Mahābhārata","कुरुक्षेत्र"],
+["Dvārakā",3,"Mahābhārata","द्वारका"],["Gāṇḍīva",3,"Mahābhārata","गाण्डीव"],["Sudarśana Cakra",3,"Mahābhārata","सुदर्शन चक्र"],["Pāñcajanya",3,"Mahābhārata","पाञ्चजन्य"],
+["Kaumodakī",3,"Mahābhārata","कौमोदकी"],["Akṣayapātra",3,"Mahābhārata","अक्षयपात्र"],["Vastraharaṇa",3,"Mahābhārata","वस्त्रहरण"],["Dyūta Krīḍā",3,"Mahābhārata","द्यूत क्रीड़ा"],
+["Cakravyūha",3,"Mahābhārata","चक्रव्यूह"],["Rāja Sūya Yajña",3,"Mahābhārata","राजसूय यज्ञ"],["Aśvamedha Yajña",3,"Mahābhārata","अश्वमेध यज्ञ"],["Bhagavad Gītā",3,"Mahābhārata","भगवद्गीता"],
+
+["Śiva",1,"Purāṇa","शिव"],["Viṣṇu",1,"Purāṇa","विष्णु"],["Brahmā",1,"Purāṇa","ब्रह्मा"],["Gaṇeśa",1,"Purāṇa","गणेश"],["Durgā",1,"Purāṇa","दुर्गा"],
+["Kālī",1,"Purāṇa","काली"],["Lakṣmī",1,"Purāṇa","लक्ष्मी"],["Sarasvatī",1,"Purāṇa","सरस्वती"],["Pārvatī",1,"Purāṇa","पार्वती"],["Indra",1,"Purāṇa","इन्द्र"],
+["Sūrya",1,"Purāṇa","सूर्य"],["Kārtikeya",1,"Purāṇa","कार्तिकेय"],
+["Nārada",2,"Purāṇa","नारद"],["Vyāsa",2,"Purāṇa","व्यास"],["Kaśyapa",2,"Purāṇa","कश्यप"],["Dakṣa",2,"Purāṇa","दक्ष"],["Satī",2,"Purāṇa","सती"],
+["Bhagīratha",2,"Purāṇa","भगीरथ"],["Dhruva",2,"Purāṇa","ध्रुव"],["Prahlāda",2,"Purāṇa","प्रह्लाद"],["Hiraṇyakaśipu",2,"Purāṇa","हिरण्यकशिपु"],
+["Hiraṇyākṣa",2,"Purāṇa","हिरण्याक्ष"],["Bali",2,"Purāṇa","बलि"],["Vāmana",2,"Purāṇa","वामन"],["Paraśurāma",2,"Purāṇa","परशुराम"],["Kalki",2,"Purāṇa","कल्कि"],
+["Yama",2,"Purāṇa","यम"],["Kubera",2,"Purāṇa","कुबेर"],["Varuṇa",2,"Purāṇa","वरुण"],["Vāyu",2,"Purāṇa","वायु"],["Airāvata",2,"Purāṇa","ऐरावत"],
+["Garuḍa",2,"Purāṇa","गरुड़"],["Śeṣanāga",2,"Purāṇa","शेषनाग"],["Nandī",2,"Purāṇa","नन्दी"],["Mūṣika",2,"Purāṇa","मूषिक"],["Matsya",2,"Purāṇa","मत्स्य"],
+["Kūrma",2,"Purāṇa","कूर्म"],["Varāha",2,"Purāṇa","वराह"],["Narasiṃha",2,"Purāṇa","नरसिंह"],
+["Samudra Manthan",3,"Purāṇa","समुद्र मंथन"],["Amṛta",3,"Purāṇa","अमृत"],["Kāmadhenu",3,"Purāṇa","कामधेनु"],["Kalpavṛkṣa",3,"Purāṇa","कल्पवृक्ष"],
+["Triśūla",3,"Purāṇa","त्रिशूल"],["Vajra",3,"Purāṇa","वज्र"],["Pāśupatāstra",3,"Purāṇa","पाशुपतास्त्र"],["Brahmāstra",3,"Purāṇa","ब्रह्मास्त्र"],
+["Kṣīrasāgara",3,"Purāṇa","क्षीरसागर"],["Śeṣaśāyī",3,"Purāṇa","शेषशायी"],["Kailāsa",3,"Purāṇa","कैलास"],["Vaikuṇṭha",3,"Purāṇa","वैकुण्ठ"],
+["Amarāvatī",3,"Purāṇa","अमरावती"],["Pātāla",3,"Purāṇa","पाताल"],["Tripurāsura",3,"Purāṇa","त्रिपुरासुर"],["Andhaka",3,"Purāṇa","अन्धक"],
+["Mahiṣāsura",3,"Purāṇa","महिषासुर"],["Raktabīja",3,"Purāṇa","रक्तबीज"],["Śumbha",3,"Purāṇa","शुम्भ"],["Niśumbha",3,"Purāṇa","निशुम्भ"],
+["Bhasmāsura",3,"Purāṇa","भस्मासुर"],["Gajendra Mokṣa",3,"Purāṇa","गजेन्द्र मोक्ष"],["Govardhana",3,"Purāṇa","गोवर्धन"],["Rāsa Līlā",3,"Purāṇa","रासलीला"],
+["Pūtanā",3,"Purāṇa","पूतना"],["Kāliya",3,"Purāṇa","कालिय"]
+];

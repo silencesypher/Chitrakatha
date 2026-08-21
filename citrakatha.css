@@ -1,0 +1,575 @@
+  /* ================= LIGHT MANUSCRIPT PALETTE =================
+     The page is aged parchment rather than a dark surface, so "ink" here means
+     what you write WITH, not what you write on.
+
+     Surfaces, lightest to deepest:
+       --sheet : the drawing surface. src/config.js BG_COLOR must equal this —
+                 the eraser paints with it and the flood-fill tool matches it.
+       --panel : a fresher sheet laid on the page (cards, panels, chat, keys)
+       --page  : the aged sheet everything sits on
+       --sunk  : recessed areas (chips, inset buttons) — a touch below the page
+
+     Two golds, and they are not interchangeable: --gold-l is only legible on a
+     dark or vermilion fill (the seal, an active button), while --gold-deep is
+     its counterpart for text sitting directly on parchment. Using the light one
+     as text on the page renders it almost invisible. */
+  :root{
+    --page:#e7ddc3;
+    --panel:#f0e8d3;
+    --sunk:#ded1b2;
+    --sheet:#f2ebd8;
+    --ink-strong:#2e2418;
+    --ink-mid:#5c4b33;
+    --ink-soft:#6f5d40;
+    --rule:#cbb98f;
+    --rule-soft:#d8c9a5;
+    --vermilion:#c1440e;
+    --vermilion-d:#9c360a;
+    --gold:#c99a3b;
+    --gold-l:#e0bd6c;
+    --gold-deep:#7d5d18;
+    --peacock:#0e6b62;
+    --danger:#a23b2e;
+    --ok:#2f7d5a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 50% 20%, #f4eedd 0%, transparent 62%),
+      radial-gradient(ellipse at 100% 110%, #d6c6a0 0%, transparent 58%),
+      var(--page);
+    color:var(--ink-strong);
+    font-family:'Hind',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Eczar',serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  button{font-family:inherit;cursor:pointer;}
+  input{font-family:inherit;}
+  ::selection{background:var(--gold);color:var(--ink-strong);}
+
+  .screen{display:none;min-height:100vh;min-height:100dvh;}
+  .screen.active{display:block;}
+  .center-wrap{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:24px;
+  }
+  .brandline{
+    text-align:center;margin-bottom:22px;
+  }
+  .brandline .glyph{font-size:15px;letter-spacing:.35em;color:var(--gold-deep);text-transform:uppercase;}
+  .brandline h1{font-size:46px;margin:6px 0 2px;color:var(--ink-strong);letter-spacing:.01em;}
+  .brandline .deva{color:var(--gold-deep);font-size:20px;display:block;margin-bottom:4px;opacity:.85;}
+  .brandline p{margin:0;color:var(--ink-mid);font-size:15px;}
+
+  .card{
+    background:var(--panel);
+    color:var(--ink-strong);
+    border-radius:20px;
+    padding:32px;
+    width:100%;max-width:440px;
+    box-shadow:0 18px 44px -22px rgba(74,58,32,.45), 0 0 0 2px var(--gold) inset;
+    animation:rise .5s ease both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .card h2{margin:0 0 4px;font-size:24px;color:var(--vermilion-d);}
+  .card .sub{margin:0 0 20px;font-size:13.5px;color:#6b5f4f;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#7a6b4f;margin-bottom:6px;}
+  .field input, .field select{
+    width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid #d8c79b;
+    background:#fbf6e8;font-size:16px;color:var(--ink-strong);outline:none;
+  }
+  .field input:focus, .field select:focus{border-color:var(--vermilion);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border:none;border-radius:11px;padding:12px 18px;font-weight:600;font-size:15px;
+    transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+  }
+  .btn:active{transform:translateY(1px) scale(.99);}
+  .btn-primary{background:var(--vermilion);color:#fff8ec;box-shadow:0 6px 0 0 var(--vermilion-d);}
+  .btn-primary:hover{filter:brightness(1.06);}
+  .btn-primary:active{box-shadow:0 2px 0 0 var(--vermilion-d);}
+  .btn-gold{background:var(--gold);color:var(--ink-strong);box-shadow:0 6px 0 0 #93701f;}
+  .btn-gold:active{box-shadow:0 2px 0 0 #93701f;}
+  .btn-ghost{background:transparent;color:var(--ink-strong);border:1.5px solid #c9b98a;box-shadow:none;}
+  .btn-block{width:100%;}
+  .divider-or{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--ink-soft);font-size:12px;text-transform:uppercase;letter-spacing:.1em;}
+  .divider-or::before,.divider-or::after{content:"";flex:1;height:1px;background:#d8c79b;}
+  .errbox{background:#fbe3dd;color:var(--danger);border:1px solid #e5b3a4;border-radius:10px;padding:9px 12px;font-size:13.5px;margin-bottom:12px;display:none;}
+  .hint-toggle{text-align:center;margin-top:16px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;text-decoration:underline dotted;}
+  .hint-body{font-size:13px;color:#5c5140;line-height:1.5;margin-top:10px;display:none;background:#fbf6e8;border-radius:10px;padding:12px;}
+  .setup-note{font-size:13px;color:#5c5140;line-height:1.6;background:#fbf6e8;border-radius:10px;padding:14px;}
+  .setup-note code{background:#eadfc0;padding:2px 5px;border-radius:5px;}
+
+  .lobby-wrap{max-width:760px;margin:0 auto;padding:36px 20px 60px;}
+  .seal{
+    width:96px;height:96px;border-radius:50%;background:var(--vermilion);
+    border:3px double var(--gold-l);display:flex;align-items:center;justify-content:center;
+    color:var(--sheet);font-family:'Eczar',serif;font-weight:800;font-size:22px;letter-spacing:.06em;
+    transform:rotate(-4deg);box-shadow:0 10px 22px -10px rgba(90,60,25,.55);margin:0 auto 6px;
+    animation:stamp .35s cubic-bezier(.2,1.4,.4,1) both;
+  }
+  @keyframes stamp{from{opacity:0;transform:scale(1.4) rotate(-4deg)}to{opacity:1;transform:scale(1) rotate(-4deg)}}
+  .lobby-top{text-align:center;margin-bottom:26px;}
+  .lobby-top .lbl{color:var(--ink-mid);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .copyline{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+  .copyline button{background:var(--sunk);color:var(--gold-deep);border:1px solid var(--rule);border-radius:8px;padding:5px 10px;font-size:12px;}
+  .panel{background:var(--panel);border:1px solid var(--rule);border-radius:16px;padding:20px;margin-bottom:16px;}
+  .panel h3{margin:0 0 12px;font-size:16px;color:var(--gold-deep);}
+  .plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .plist li{display:flex;align-items:center;justify-content:space-between;background:var(--sunk);border-radius:10px;padding:9px 13px;font-size:14.5px;}
+  .plist .tag{font-size:10.5px;background:var(--gold);color:var(--ink-strong);border-radius:6px;padding:2px 6px;margin-left:8px;font-weight:700;letter-spacing:.03em;}
+  .settingsrow{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+  .settingsrow .field label{color:var(--ink-soft);}
+  .settingsrow select{background:#fbf6e8;color:var(--ink-strong);border:1.5px solid var(--rule);}
+  .waitline{text-align:center;color:var(--ink-mid);font-size:13.5px;padding:8px 0;}
+
+  .game-wrap{max-width:1180px;margin:0 auto;padding:16px 16px 0;display:flex;flex-direction:column;min-height:100vh;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 4px 14px;flex-wrap:wrap;}
+  .topbar .rc{font-family:'Eczar',serif;color:var(--gold-deep);font-weight:700;letter-spacing:.05em;font-size:15px;}
+  .roundinfo{color:var(--ink-mid);font-size:13.5px;}
+  .timer{
+    font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;
+    background:var(--panel);border:1.5px solid var(--gold);border-radius:10px;padding:4px 14px;color:var(--gold-deep);
+    min-width:64px;text-align:center;
+  }
+  .timer.low{color:var(--vermilion);border-color:var(--vermilion);}
+  .maskword{font-family:'JetBrains Mono',monospace;font-size:21px;letter-spacing:.16em;color:var(--ink-strong);text-align:center;}
+  .maskword .cat{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px;font-family:'Hind',sans-serif;}
+
+  .main-area{display:flex;gap:16px;flex:1;align-items:flex-start;flex-wrap:wrap;}
+  .board-col{flex:1 1 560px;min-width:0;}
+  .side-col{flex:0 0 300px;display:flex;flex-direction:column;gap:12px;}
+
+  .board-frame{position:relative;background:var(--sheet);border-radius:16px;border:3px solid var(--gold);overflow:hidden;box-shadow:0 16px 34px -22px rgba(90,60,25,.5);}
+  canvas#board{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair;}
+  .board-overlay{
+    position:absolute;inset:0;background:rgba(231,221,195,.94);display:flex;align-items:center;flex-direction:column;
+    text-align:center;padding:20px;color:var(--ink-strong);
+    overflow-y:auto;
+    /* Centers the title + choices when they fit the canvas height; on a short
+       mobile canvas where they don't, "safe" falls back to start-alignment so
+       the top and bottom stay reachable by scrolling instead of being centered
+       past the box's own edges — which, combined with overflow:hidden on the
+       parent .board-frame, was clipping the title and the last choice with no
+       way to reach either. Unsupported browsers get the plain value before it. */
+    justify-content:flex-start;
+    justify-content:safe center;
+  }
+  .board-overlay h3{margin:0 0 6px;color:var(--gold-deep);font-size:20px;}
+  .choice-btns{display:flex;flex-direction:column;gap:10px;margin-top:14px;width:100%;max-width:300px;}
+  .choice-btns button{width:100%;background:var(--panel);border:1.5px solid var(--gold);color:var(--ink-strong);border-radius:12px;padding:12px;font-size:17px;font-family:'Eczar',serif;font-weight:700;letter-spacing:.03em;}
+  .choice-btns button:hover{background:var(--sunk);}
+
+  .toolbar{display:flex;flex-direction:column;gap:8px;padding:10px 6px;}
+  .tool-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .swatch{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,0,0,.15);cursor:pointer;flex:none;}
+  .swatch.active{box-shadow:0 0 0 3px var(--gold-deep);}
+  .sizebtn{width:26px;height:26px;border-radius:50%;background:var(--ink-strong);border:2px solid transparent;cursor:pointer;flex:none;}
+  .sizebtn.active{border-color:var(--gold-deep);}
+  .toolbar .spacer{flex:1;}
+  .toolbar button.util{background:var(--panel);color:var(--gold-deep);border:1px solid var(--rule);border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;}
+  .toolbar button.util:disabled{opacity:.4;cursor:default;}
+  .toolbtn{width:34px;height:34px;border-radius:8px;background:var(--panel);border:1px solid var(--rule);cursor:pointer;flex:none;font-size:15px;line-height:1;color:var(--ink-strong);display:flex;align-items:center;justify-content:center;padding:0;}
+  .toolbtn.active{background:var(--gold-l);border-color:var(--gold);color:var(--ink-strong);}
+
+  .panel.tight{padding:14px 16px;}
+  .score-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px solid var(--rule-soft);}
+  .score-row:last-child{border-bottom:none;}
+  .score-row .who{display:flex;align-items:center;gap:6px;}
+  .score-row .pip{width:8px;height:8px;border-radius:50%;background:var(--peacock);}
+  .score-row .pip.drawing{background:var(--vermilion);}
+  .score-row .pts{font-family:'JetBrains Mono',monospace;color:var(--gold-deep);}
+
+  .chatbox{background:var(--panel);border:1px solid var(--rule);border-radius:14px;display:flex;flex-direction:column;height:260px;min-height:0;}
+  /* min-height:0 for the same reason .guessform input needs min-width:0: without
+     it, a flex item's automatic minimum size is its content size, so chatlog
+     would refuse to shrink below its own message list even when the keyboard
+     has left barely any room — squeezing the guess box off the bottom of the
+     screen instead. overflow-y:auto is what lets it go small: messages scroll. */
+  .chatlog{flex:1;min-height:0;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;}
+  .chatlog .msg{line-height:1.35;}
+  .chatlog .msg .nm{color:var(--gold-deep);font-weight:600;}
+  .chatlog .msg.system{color:var(--ink-soft);font-style:italic;}
+  .chatlog .msg.correct{color:var(--ok);font-weight:600;}
+  .guessform{display:flex;gap:8px;padding:10px;border-top:1px solid var(--rule);}
+  /* min-width:0 overrides the input's UA-default intrinsic width, which
+     otherwise wins over flex-shrink and pushes the submit button (and the
+     whole row) past the edge of narrow screens. */
+  .guessform input{flex:1;min-width:0;background:#fbf6e8;border:1.5px solid var(--rule);color:var(--ink-strong);border-radius:9px;padding:10px 11px;font-size:16px;outline:none;}
+  .guessform input:focus{border-color:var(--gold);}
+  .guessform button{background:var(--vermilion);color:#fff8ec;border:none;border-radius:9px;padding:0 16px;font-weight:600;}
+  .guessform.disabled input, .guessform.disabled button{opacity:.45;pointer-events:none;}
+
+  .iastbar{
+    padding:14px 6px 22px;
+  }
+  .keygroup{margin-bottom:10px;}
+  .keygroup:last-child{margin-bottom:0;}
+  .keygroup-label{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 6px 2px;}
+  .keyrow{display:flex;flex-wrap:wrap;gap:7px;}
+  .key{
+    flex:none;width:46px;height:52px;border-radius:9px;
+    background:linear-gradient(180deg,#f7f1e0,#e8dcc0);
+    border:1px solid var(--rule);border-bottom:3px solid #17132500;
+    box-shadow:0 2px 0 0 #c2ab7e, inset 0 1px 0 rgba(255,255,255,.5);
+    color:var(--ink-strong);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:'Eczar',serif;font-size:19px;font-weight:700;line-height:1;transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .key .cap{font-size:8.5px;color:var(--ink-soft);font-family:'Hind',sans-serif;margin-top:3px;letter-spacing:.02em;}
+  .key:active{transform:translateY(2px);box-shadow:0 1px 0 0 #c2ab7e, inset 0 1px 0 rgba(255,255,255,.5);}
+  .key.wide{width:70px;font-size:13px;}
+  .key.deva{font-size:22px;}
+  .key.deva .cap{font-size:8px;}
+
+  .roundend-banner{
+    position:absolute;inset:0;background:rgba(231,221,195,.95);display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px;
+    overflow-y:auto;
+    justify-content:flex-start;   /* see .board-overlay for why "safe" is needed */
+    justify-content:safe center;
+  }
+  .roundend-banner .word{font-family:'Eczar',serif;font-size:30px;color:var(--gold-deep);margin:6px 0;}
+  .roundend-banner .cat{color:var(--ink-soft);font-size:12.5px;text-transform:uppercase;letter-spacing:.1em;}
+  .roundend-banner ul{list-style:none;padding:0;margin:14px 0 0;font-size:13.5px;color:var(--ink-mid);}
+
+  .final-list{list-style:none;margin:0;padding:0;}
+  .final-list li{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--sunk);border-radius:10px;margin-bottom:8px;font-size:15px;}
+  .final-list li.first{background:linear-gradient(90deg,#f7e7ba,#efe2c2);border:1px solid var(--gold);}
+  .final-list .rank{width:26px;color:var(--gold-deep);font-family:'JetBrains Mono',monospace;}
+
+  .footnote{text-align:center;color:var(--ink-soft);font-size:11.5px;margin:26px 0 10px;line-height:1.6;}
+  .footnote a{color:var(--gold-deep);}
+
+  @media (max-width:860px){
+    .side-col{flex:1 1 100%;}
+    .board-col{flex:1 1 100%;}
+  }
+  @media (max-width:640px){
+    .settingsrow{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:520px){
+    .settingsrow{grid-template-columns:1fr;}
+    .brandline h1{font-size:34px;}
+  }
+
+
+/* ==================================================================
+   TOUCH + MOBILE
+   ------------------------------------------------------------------
+   The canvas coordinate space stays 800x500 on every device on purpose:
+   strokes travel over the wire as canvas coordinates, so changing the
+   internal size per screen would distort other players' drawings. Only
+   the CSS display size adapts. On a phone that means the canvas is
+   letterboxed to ~62% of the viewport width in height, which is why the
+   surrounding chrome has to become genuinely compact rather than just
+   stacking.
+
+   Note on sharpness: an 800px backing store shown across ~360 CSS px is
+   already oversampled ~2.2x, so no devicePixelRatio scaling is applied.
+   At DPR 3 that leaves a mild 1.35-1.45x upscale, which is barely visible
+   on hand-drawn strokes and much cheaper than doubling the pixel count
+   that the flood-fill tool has to scan on every repaint.
+   ================================================================== */
+
+/* --- touch hygiene, all viewports --- */
+button, .key, .swatch, .sizebtn, .toolbtn, .copyline button{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
+  touch-action:manipulation;      /* removes the 300ms double-tap-zoom delay */
+}
+body{
+  overscroll-behavior-y:contain;  /* no pull-to-refresh while drawing near the top */
+  -webkit-text-size-adjust:100%;
+}
+.chatlog{
+  overscroll-behavior:contain;    /* scrolling chat must not scroll the page */
+  -webkit-overflow-scrolling:touch;
+}
+
+/* --- visible keyboard focus (there was none) --- */
+:focus-visible{outline:2px solid var(--gold-deep);outline-offset:2px;}
+.btn:focus-visible, .key:focus-visible, .toolbtn:focus-visible,
+.swatch:focus-visible, .sizebtn:focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px;}
+
+/* --- swatches / sizes are real buttons now --- */
+.swatch{padding:0;appearance:none;}
+.sizebtn{display:flex;align-items:center;justify-content:center;padding:0;background:transparent;border:2px solid transparent;}
+.sizebtn i{display:block;border-radius:50%;background:var(--ink-strong);}
+.sizebtn.active{border-color:var(--gold-l);}
+
+/* --- script-keyboard toggle: hidden on desktop, where the bar is always visible --- */
+.scriptbtn{
+  display:none;flex:none;width:44px;border:1.5px solid var(--rule);background:var(--sunk);
+  color:var(--gold-deep);border-radius:9px;font-family:'Eczar',serif;font-size:19px;line-height:1;
+}
+.scriptbtn[aria-expanded="true"]{background:var(--gold-l);color:var(--ink-strong);border-color:var(--gold);}
+.rotate-hint{display:none;font-size:11px;color:var(--ink-soft);}
+.iastbar-head{display:none;}
+
+/* the drawer never types a guess, so the script bar and its toggle are dead weight */
+body.is-drawer #iastbar, body.is-drawer .scriptbtn{display:none !important;}
+
+/* ==================== PHONE CHROME (BOTH ORIENTATIONS) ====================
+   Touch targets, the compact toolbar, the chip scoreboard and the script
+   keyboard's bottom-sheet behaviour are all "this is a phone" concerns, not
+   "this is portrait" ones. They were previously scoped to max-width:720px
+   only, so a phone held sideways (which matches up to 900px wide) fell back to
+   the desktop rules: the 62-key bar rendered inline and pushed the drawing
+   toolbar off the bottom of a 380px-tall screen. Orientation-specific layout
+   lives in the two blocks below this one. */
+@media (max-width:720px), (max-width:900px) and (max-height:540px) and (orientation:landscape){
+  /* One screen, no page scroll: only the chat log scrolls. dvh follows the
+     browser chrome as it hides, which vh does not. */
+  /* --app-h is the visualViewport height, published by trackVisualViewport().
+     It shrinks when the native keyboard opens (which dvh does not do on iOS),
+     keeping the guess box on screen instead of behind the keyboard. */
+  .game-wrap{
+    height:100vh; height:100dvh; height:var(--app-h, 100dvh);
+    max-height:100vh; max-height:100dvh; max-height:var(--app-h, 100dvh);
+    min-height:0;            /* the base rule's min-height:100vh would pin the
+                                screen open at full height and undo --app-h */
+    padding:8px 8px 0;
+    overflow:hidden;
+    gap:0;
+  }
+  .topbar{padding:4px 2px 6px;gap:8px;flex-wrap:nowrap;flex:none;}
+  .topbar .rc{font-size:12px;letter-spacing:.02em;}
+  .roundinfo{font-size:11.5px;white-space:nowrap;}
+  .timer{font-size:17px;padding:2px 9px;min-width:52px;}
+
+  .maskword{font-size:17px;letter-spacing:.12em;flex:none;padding-bottom:4px;}
+  .maskword .cat{font-size:10px;margin-top:2px;}
+
+  .board-frame{border-width:2px;border-radius:12px;}
+  .board-overlay{padding:10px;}
+  .board-overlay h3{font-size:14px;margin:2px 0 4px;}
+  .choice-btns{gap:6px;margin-top:6px;}
+  .choice-btns button{padding:9px;font-size:14px;}
+  .roundend-banner{padding:12px;}
+  .roundend-banner .word{font-size:20px;margin:3px 0;}
+  .roundend-banner ul{margin-top:8px;}
+
+  /* Tools: every control on screen, no horizontal scrolling.
+     These rows used to be nowrap + overflow-x:auto, which meant 453px of controls
+     in a 359px row — Undo and Redo sat past the right edge on every phone, and row
+     two (733px) hid Clear entirely. Nothing signalled they were there to scroll to.
+     Smaller targets + glyph-only labels bring both rows inside the viewport; wrap
+     is kept as the fallback so a control can never become unreachable again, it
+     just moves to a second line on a very narrow screen. */
+  .toolbar{padding:8px 0 0;gap:6px;flex:none;}
+  .tool-row{flex-wrap:wrap;overflow:visible;gap:4px;padding-bottom:0;}
+  .toolbtn{width:36px;height:36px;font-size:16px;border-radius:9px;}
+  .swatch{width:26px;height:26px;}
+  .sizebtn{width:30px;height:30px;}
+  .toolbar button.util{padding:0 9px;height:36px;font-size:12px;white-space:nowrap;}
+  .toolbar .util .lbl{display:none;}   /* "↶ Undo" -> "↶", "Clear canvas" -> "Clear" */
+  .toolbar .spacer{display:none;}
+
+  /* Scoreboard collapses to a single scrollable strip of chips */
+  .panel.tight{
+    padding:6px 8px;margin-bottom:0;flex:none;border-radius:10px;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .panel.tight::-webkit-scrollbar{display:none;}
+  .panel.tight h3{display:none;}
+  #scorelist{display:flex;gap:6px;width:max-content;}
+  .score-row{
+    padding:4px 9px;border-bottom:none;background:var(--sunk);border-radius:999px;
+    font-size:12.5px;gap:6px;white-space:nowrap;flex:none;
+  }
+  .score-row .pip{width:6px;height:6px;}
+
+  /* Chat takes whatever is left; the form sits at the bottom of it */
+  .chatbox{height:auto;flex:1;min-height:70px;border-radius:12px;}
+  .chatlog{font-size:13px;padding:8px 10px;gap:5px;}
+  .guessform{
+    padding:8px;gap:6px;
+    padding-bottom:calc(8px + env(safe-area-inset-bottom));
+  }
+  .guessform button[type="submit"]{padding:0 14px;font-size:14px;}
+  .scriptbtn{display:flex;align-items:center;justify-content:center;}
+
+  /* Script keyboard becomes a bottom sheet, closed by default */
+  .iastbar{
+    display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:var(--panel);border-top:1px solid var(--rule);
+    border-radius:14px 14px 0 0;
+    padding:10px 8px calc(10px + env(safe-area-inset-bottom));
+    max-height:46dvh;overflow-y:auto;overscroll-behavior:contain;
+    box-shadow:0 -10px 30px rgba(90,60,25,.28);
+  }
+  .iastbar.open{display:block;}
+  /* Sheet header: the guess form is moved in here while the sheet is open
+     (see openScriptSheet), so the input stays visible above the keys. */
+  /* Sticky so the guess box stays put while the 62 Devanagari keys scroll. */
+  .iastbar-head{
+    display:flex;align-items:stretch;gap:6px;margin:0 0 10px;
+    position:sticky;top:-10px;z-index:1;background:var(--panel);
+    padding:10px 0 8px;margin-top:-10px;
+  }
+  .iastbar-head .guessform{flex:1;min-width:0;padding:0;border-top:none;background:transparent;}
+  .iastbar-head .scriptbtn{display:none;}   /* "Done" is the close control in here */
+  .iastbar-close{
+    flex:none;background:var(--sunk);color:var(--gold-deep);border:1.5px solid var(--rule);
+    border-radius:9px;padding:0 14px;font-size:13px;font-weight:600;
+    font-family:'Hind',sans-serif;
+  }
+  .iastbar-close:active{background:var(--gold-l);color:var(--ink-strong);}
+  .keygroup{margin-bottom:8px;}
+  .keygroup-label{font-size:9.5px;margin-bottom:4px;}
+  .keyrow{gap:5px;}
+  .key{width:40px;height:44px;font-size:17px;border-radius:8px;}
+  .key.deva{font-size:19px;}
+  .key .cap{font-size:7.5px;margin-top:2px;}
+  .key.wide{width:62px;font-size:12px;}
+
+  /* Landing / lobby breathing room */
+  .center-wrap{padding:16px;min-height:100vh;min-height:100dvh;}
+  .card{padding:22px;border-radius:16px;}
+  .brandline h1{font-size:32px;}
+  .brandline .deva{font-size:17px;}
+  .brandline p{font-size:13.5px;}
+  .hint-toggle{padding:8px 0;}
+
+  /* Lobby: compact enough that the seal, both panels, and the footnote all fit one
+     phone screen without scrolling — settings + roster aren't something you read
+     under time pressure the way the drawing screen is, so smaller-than-44px touch
+     targets here are a fair trade for having everything visible at once. Select
+     font-size stays at the base 16px throughout (only padding shrinks) — dropping
+     that reintroduces the iOS auto-zoom-on-focus bug the markup test guards against. */
+  .lobby-wrap{padding:10px 12px 8px;}
+  .lobby-top{margin-bottom:6px;}
+  .seal{width:56px;height:56px;font-size:13px;margin-bottom:2px;}
+  .lobby-top .lbl{font-size:10px;margin-top:2px;}
+  .copyline{margin-top:5px;}
+  .copyline button{padding:5px 12px;font-size:11px;}
+  .panel{padding:10px 12px;margin-bottom:6px;border-radius:12px;}
+  .panel h3{margin:0 0 6px;font-size:13px;}
+  .settingsrow{grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
+  .settingsrow .field label{font-size:10px;margin-bottom:2px;}
+  .settingsrow select{padding:6px 8px;border-radius:8px;}
+  .lobby-wrap .btn{padding:7px 14px;font-size:13px;}
+  /* Caps the roster instead of the page: a 9th player scrolls inside the list, not
+     the whole screen — the rest of the lobby stays put and still fits. */
+  .plist{gap:4px;max-height:128px;overflow-y:auto;}
+  .plist li{padding:5px 10px;font-size:12.5px;border-radius:8px;}
+  .plist .tag{font-size:8.5px;padding:1px 5px;}
+  .waitline{font-size:11px;padding:4px 0;}
+  .footnote{font-size:10px;line-height:1.3;margin:5px 0 0;}
+}
+
+/* ==================== PHONE PORTRAIT (layout only) ====================
+   Tall and narrow: one column, canvas on top, chat filling the rest. */
+@media (max-width:720px){
+  .main-area{flex-direction:column;flex-wrap:nowrap;gap:8px;flex:1;min-height:0;overflow:hidden;}
+  .board-col{flex:none;width:100%;}
+  /* The canvas sits ABOVE the chat/guess box here (unlike landscape, where they're
+     side by side), so when the keyboard eats most of --app-h, canvas and guessform
+     compete for the same shrinking budget. Without a height cap the canvas holds
+     its full width-driven height regardless, and the guess box — the thing you're
+     actively typing into — is what gets pushed out of the overflow:hidden game-wrap.
+     Capping canvas width caps its height (1.6 = 800/500), so it shrinks instead and
+     the guess box stays put. 248px = topbar + maskword + scorelist strip + guessform's
+     own height + chatlog's padding floor + gaps + border/rounding slop between them —
+     measured against a fixture, not hand-derived: flexbox's actual space distribution
+     compounds small rounding errors (borders, subpixels) that pure arithmetic missed,
+     and a couple of lower estimates still clipped the guess box by several px. What's
+     left over after this is however much of --app-h the canvas gets. */
+  /* clamp, not min: below ~248px of --app-h the raw formula goes to zero or negative
+     (no realistic phone+keyboard combination gets this tight), so floor it at a small
+     but still-recognizable 120px rather than let the canvas vanish to a sliver. */
+  .board-frame{max-width:clamp(120px, calc((var(--app-h, 100dvh) - 248px) * 1.6), 100%);margin:0 auto;width:100%;}
+  /* The lower half is split side by side rather than stacked: guesses on the left,
+     scores on the right, 65:35.
+
+     The basis subtracts the gap before taking the percentage, so the two outer
+     widths land on a true 65:35 of the space actually available. Plain 65%/35%
+     bases sum to 100% + the gap and overflow; grow factors of 65/35 look right
+     but divide only the FREE space, so each item also keeps its own padding and
+     border on top — that skewed the result to 62:38 in favour of the padded
+     scoreboard panel. order puts the chat first visually while the DOM keeps the
+     scoreboard ahead of it for the stacked landscape/desktop layouts. */
+  .side-col{flex:1;min-height:0;width:100%;gap:8px;display:flex;flex-direction:row;}
+  .chatbox{flex:0 0 calc((100% - 8px) * 0.65);min-width:0;order:1;}
+  .panel.tight{
+    flex:0 0 calc((100% - 8px) * 0.35);min-width:0;order:2;
+    overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  }
+  /* Back to a vertical list. The horizontal chip strip in the shared phone block
+     was for the full-width band this used to be, above the chat. */
+  #scorelist{flex-direction:column;width:auto;gap:4px;}
+  .score-row{font-size:11.5px;padding:4px 7px;gap:4px;}
+  .score-row .who{min-width:0;}
+  .score-row .who-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .score-row .pts{flex:none;}
+  /* Stays hidden (the base rule is display:none). This advisory string measured
+     225px — wider than all six colour swatches together — and was the single
+     biggest reason the second tool row ran off the screen, pushing Clear out of
+     reach. The tool rows are for tools; rotating for a bigger canvas is something
+     the canvas itself demonstrates the moment you turn the phone. */
+
+  /* body.kb-open is set by trackVisualViewport() in gamescreen.js once the native
+     keyboard has visibly eaten a chunk of the screen (see the comment there). The
+     scoreboard and chat history are the least useful things on screen while you're
+     actively typing a guess — who's winning and what was already said can wait a
+     few seconds — so they're what gives up its space, not the canvas. This is
+     instead of the plain .board-frame rule above shrinking the canvas to make room
+     for chrome that isn't earning its keep at that moment. */
+  body.kb-open .panel.tight{display:none;}
+  body.kb-open .chatlog{display:none;}
+  /* With the scoreboard gone the 65% basis would leave the right third of the row
+     empty, so hand the whole width back to the guess box you're typing into. */
+  body.kb-open .chatbox{flex-basis:100%;}
+  /* Reserve drops to just topbar + maskword + guessform + gaps now that the score
+     strip and chat history are out of the picture — so this only engages at all on
+     a squeeze the first cap wouldn't have hit anyway. Same clamp floor as above. */
+  body.kb-open .board-frame{max-width:clamp(120px, calc((var(--app-h, 100dvh) - 170px) * 1.6), 100%);}
+}
+
+/* ==================== PHONE LANDSCAPE ====================
+   Short and wide: a full-width canvas would be taller than the viewport, so go
+   back to two columns and let the canvas take ~58% of the width. */
+@media (max-width:900px) and (max-height:540px) and (orientation:landscape){
+  .game-wrap{height:100vh;height:100dvh;height:var(--app-h, 100dvh);min-height:0;overflow:hidden;padding:6px 8px 0;}
+  .topbar{padding:2px 2px 4px;}
+  .maskword{font-size:15px;padding-bottom:2px;}
+  .main-area{flex-direction:row;flex-wrap:nowrap;gap:10px;flex:1;min-height:0;}
+  .board-col{flex:1 1 58%;min-width:0;display:flex;flex-direction:column;min-height:0;}
+  .side-col{flex:1 1 42%;min-width:0;min-height:0;}
+  /* Undo the portrait 65:35 side-by-side split. A phone narrow enough to also match
+     the portrait block (anything <=720px wide, e.g. 568x320 landscape) would
+     otherwise carry that row layout in here, where the side column is already only
+     42% wide — far too cramped to split again. Scoreboard goes back to a chip strip
+     stacked above the chat. */
+  .side-col{flex-direction:column;}
+  .chatbox{flex:1 1 auto;order:0;}
+  .panel.tight{flex:none;order:0;overflow-x:auto;overflow-y:visible;}
+  #scorelist{flex-direction:row;width:max-content;gap:6px;}
+  /* The 8:5 canvas must never be taller than the space left under the topbar, or
+     the toolbar lands off the bottom of a short screen. Capping the width caps
+     the height, since height = width / 1.6 (800x500). The drawer subtracts the
+     toolbar's ~94px as well; a guesser has no toolbar and gets the taller board. */
+  .board-frame{max-width:min(100%, calc((var(--app-h, 100dvh) - 60px) * 1.6));margin:0 auto;width:100%;}
+  body.is-drawer .board-frame{max-width:min(100%, calc((var(--app-h, 100dvh) - 178px) * 1.6));}
+  .toolbar{padding:6px 0 0;}
+  .toolbtn{width:38px;height:38px;}
+  .rotate-hint{display:none;}
+  .iastbar{max-height:60dvh;}
+  .key{width:36px;height:38px;font-size:15px;}
+  .key .cap{display:none;}
+}
+
+/* ==================== REDUCED MOTION ==================== */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}

@@ -1,0 +1,10 @@
+# Vercel only needs what the browser fetches.
+test
+README.md
+DEPLOY.md
+
+# Firebase config stays in the repo but is not part of the deployed site.
+# The database rules are deployed with the Firebase CLI, not with Vercel.
+firebase.json
+.firebaserc
+database.rules.json

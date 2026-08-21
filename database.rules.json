@@ -1,0 +1,33 @@
+{
+  "rules": {
+    "$room": {
+      ".read":  "$room.matches(/^citrakatha:[A-Z0-9]{5}:(core|draw|chat|presence)$/)",
+      ".write": "$room.matches(/^citrakatha:[A-Z0-9]{5}:(core|draw|chat|presence)$/)",
+
+      "players": {
+        "$index": {
+          "name":  { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24" },
+          "id":    { ".validate": "newData.isString() && newData.val().length <= 40" },
+          "score": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" }
+        }
+      },
+
+      "messages": {
+        "$msgId": {
+          "text": { ".validate": "newData.isString() && newData.val().length <= 200" },
+          "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
+          "type": { ".validate": "newData.isString() && newData.val().length <= 16" },
+          "id":   { ".validate": "newData.isString() && newData.val().length <= 40" },
+          "ts":   { ".validate": "newData.isNumber()" }
+        }
+      },
+
+      "hostId":   { ".validate": "newData.isString() && newData.val().length <= 40" },
+      "phase":    { ".validate": "newData.isString() && newData.val().length <= 16" },
+      "roomCode": { ".validate": "newData.isString() && newData.val().length <= 8" },
+
+      "createdAt":    { ".validate": "newData.isNumber()" },
+      "lastActiveAt": { ".validate": "newData.isNumber()" }
+    }
+  }
+}
